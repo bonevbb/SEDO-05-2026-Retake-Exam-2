@@ -1,32 +1,29 @@
 pipeline {
     agent any
 
-    triggers {
-        githubPush()
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
+        stage('Build and Test') {
+            when {
+                branch 'main'
             }
-        }
+            stages {
+                stage('Restore') {
+                    steps {
+                        sh '/usr/local/bin/dotnet restore'
+                    }
+                }
 
-        stage('Restore') {
-            steps {
-                sh 'dotnet restore Homies.sln'
-            }
-        }
+                stage('Build') {
+                    steps {
+                        sh '/usr/local/bin/dotnet build --no-restore'
+                    }
+                }
 
-        stage('Build') {
-            steps {
-                sh 'dotnet build Homies.sln --no-restore'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'dotnet test Homies.sln --no-build'
+                stage('Test') {
+                    steps {
+                        sh '/usr/local/bin/dotnet test --no-build --verbosity normal'
+                    }
+                }
             }
         }
     }
