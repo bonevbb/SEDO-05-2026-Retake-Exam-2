@@ -55,3 +55,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+// trigger test for feature/** CI workflow
